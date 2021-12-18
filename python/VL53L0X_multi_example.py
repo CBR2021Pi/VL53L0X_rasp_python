@@ -44,7 +44,7 @@ GPIO.output(sensor2_shutdown, GPIO.LOW)
 
 # Keep all low for 500 ms or so to make sure they reset
 time.sleep(0.50)
-time.sleep(0.50)
+time.sleep(0.50) # Can be deleted
 
 # Create one object per VL53L0X passing the address to give to
 # each.
