@@ -44,46 +44,52 @@ GPIO.output(sensor2_shutdown, GPIO.LOW)
 
 # Keep all low for 500 ms or so to make sure they reset
 time.sleep(0.50)
+time.sleep(0.50)
 
 # Create one object per VL53L0X passing the address to give to
 # each.
-tof = VL53L0X.VL53L0X(address=0x2B)
+tof0 = VL53L0X.VL53L0X(address=0x2B)
 tof1 = VL53L0X.VL53L0X(address=0x2D)
 
+print ("TOF0 start ranging")
 # Set shutdown pin high for the first VL53L0X then 
 # call to start ranging 
 GPIO.output(sensor1_shutdown, GPIO.HIGH)
 time.sleep(0.50)
-tof.start_ranging(VL53L0X.VL53L0X_BETTER_ACCURACY_MODE)
+time.sleep(0.50)
+tof0.start_ranging(VL53L0X.VL53L0X_BETTER_ACCURACY_MODE)
 
+print ()
+print ("TOF1 start ranging")
 # Set shutdown pin high for the second VL53L0X then 
 # call to start ranging 
 GPIO.output(sensor2_shutdown, GPIO.HIGH)
 time.sleep(0.50)
+time.sleep(0.50)
 tof1.start_ranging(VL53L0X.VL53L0X_BETTER_ACCURACY_MODE)
 
-timing = tof.get_timing()
+timing = tof0.get_timing()
 if (timing < 20000):
     timing = 20000
 print ("Timing %d ms" % (timing/1000))
 
 for count in range(1,101):
-    distance = tof.get_distance()
+    distance = tof0.get_distance()
     if (distance > 0):
-        print ("sensor %d - %d mm, %d cm, iteration %d" % (tof.my_object_number, distance, (distance/10), count))
+        print ("sensor %d - %d mm, %d cm, iteration %d" % (tof0.my_object_number, distance, (distance/10), count))
     else:
-        print ("%d - Error" % tof.my_object_number)
+        print ("%d - Error" % tof0.my_object_number)
 
     distance = tof1.get_distance()
     if (distance > 0):
         print ("sensor %d - %d mm, %d cm, iteration %d" % (tof1.my_object_number, distance, (distance/10), count))
     else:
-        print ("%d - Error" % tof.my_object_number)
+        print ("%d - Error" % tof1.my_object_number)
 
     time.sleep(timing/1000000.00)
 
 tof1.stop_ranging()
 GPIO.output(sensor2_shutdown, GPIO.LOW)
-tof.stop_ranging()
+tof0.stop_ranging()
 GPIO.output(sensor1_shutdown, GPIO.LOW)
 
